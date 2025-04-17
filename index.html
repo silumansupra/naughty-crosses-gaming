@@ -109,12 +109,14 @@ $(document).ready(function(){
 			}
 		}
 		
+        // if there is the winner based on winning pattern and stop the game
 		if(round_winner) {
 			console.log('Game end, winner');
 			game_state = false;
 			return;
 		}
 		
+        // if there is no winner and stop the game
 		let round_draw = !game_state.includes('');
 		if(round_draw) {
 			console.log('Game draw');
