@@ -1,0 +1,140 @@
+<html>
+<head>
+<title>Gaimng Test</title>
+
+<style>
+.container {
+	display: flex;
+	flex-direction: column;
+	align-items: center;
+}
+
+.center {
+	text-align: center;
+}
+
+.board {
+	display: grid;
+	gap: 5px;
+	border: 1px solid black;
+	grid-template-columns: repeat(3, 100px);
+    grid-template-rows: repeat(3, 100px);
+}
+
+.cell {
+	display: flex;
+	align-items: center;
+	justify-content: center;
+}
+
+.cell:hover {
+	background-color: #CCCCCC;
+}
+
+.x { color: red }
+.y { color: blue }
+
+</style>
+
+</head>
+<body>
+<div class="center">
+	<h1>Naught and Cross Game</h1>
+	<span class="status">X Turn</span>
+	<div class="container">
+		<div class="board">
+			<div class="cell" data-square="0"></div>
+			<div class="cell" data-square="1"></div>
+			<div class="cell" data-square="2"></div>
+			<div class="cell" data-square="3"></div>
+			<div class="cell" data-square="4"></div>
+			<div class="cell" data-square="5"></div>
+			<div class="cell" data-square="6"></div>
+			<div class="cell" data-square="7"></div>
+			<div class="cell" data-square="8"></div>
+		</div>
+	</div>
+	<div style='text-align:center;'>
+		<button id="btn-reset">Reset</button>
+	</div>
+</div>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/jquery/3.7.1/jquery.min.js"></script>
+
+<script type="text/javascript">
+$(document).ready(function(){
+	let player = 'X';
+	let game_status = true;
+	let game_state = ['', '', '', '', '', '', '', '', ''];
+		
+	const btn_reset = $('#btn-reset');
+	const cell = $('.cell');
+	const status_text = $('.status');
+	
+	btn_reset.click(function() {
+		reset_game();
+	});
+	
+	console.log('game is ready');
+		
+	cell.on('click',function(){
+		let round_winner = false;
+		let cell_index = $(this).data('square');
+		
+		if(game_state[cell_index] !=='' || !game_status) {
+			return;
+		}
+		
+		game_state[cell_index] = player;
+		
+		$(this).html(player).addClass(player.toLowerCase());
+		
+		check_winner();
+		
+	});	
+	
+	function check_winner(){
+		const winning_pattern = [[0,1,2],[3,4,5],[6,7,8],[0,3,6],[1,4,7],[2,5,8],[0,4,8],[2,4,6]];
+		let round_winner = false
+		
+		for ( let x=0; x < winning_pattern.length; x++ ) {
+			const[a,b,c] = winning_pattern[x];
+				
+			if(game_state[a] === '' || game_state[b] === '' || game_state[c] === ''){
+				console.log('continue');
+				continue;
+			}
+			
+			if(game_state[a] === game_state[b] && game_state[b] === game_state[c]){
+				round_winner = true; break;
+			}
+		}
+		
+		if(round_winner) {
+			console.log('Game end, winner');
+			game_state = false;
+			return;
+		}
+		
+		let round_draw = !game_state.includes('');
+		if(round_draw) {
+			console.log('Game draw');
+			game_state = false;
+			return;
+		}
+			
+		player = player === 'X' ? 'O' : 'X';
+		status_text.html(player + `'s turn`);
+	}
+	
+	function reset_game() {
+		player = 'X';
+		game_status = true;
+		game_state = ['', '', '', '', '', '', '', '', ''];
+		cell.text('');
+	}
+
+});
+
+</script>
+</body>
+</html>
